@@ -1,0 +1,57 @@
+version: '3.1'
+services:
+  jira:
+    restart: always
+    container_name: jira
+    image: <your_registry_here>/jira-software:7.5.0 #@TODO build image
+    links:
+      - database
+    ports:
+      - "8080:8080"
+    environment:
+      - "CATALINA_OPTS= -Xms768m -Xmx2536m"
+    volumes:
+      - /opt/jira:/var/atlassian/jira
+
+  confluence:
+    restart: always
+    container_name: confluence
+    image: <your_registry_here>/confluence:6.3.4 #@TODO build image
+    links:
+      - database
+    ports:
+      - "8090:8090"
+    volumes:
+      - /opt/confluence:/var/atlassian/confluence
+
+  database:
+    restart: always
+    container_name: percona
+    image: <your_registry_here>/percona:latest
+    environment:
+#      - MYSQL_DATABASE=confluencedb
+#      - MYSQL_DATABASE=jiradb
+#      - MYSQL_USER=cuser
+#      - MYSQL_USER=jirauser
+#      - MYSQL_PASSWORD=<cuser_pass_here>
+#      - MYSQL_PASSWORD=<jiradb_pass_here>
+#      - MYSQL_ROOT_PASSWORD=<root_pass_here>
+    volumes:
+      - /opt/percona:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    command:
+      - '--collation-server=utf8_bin'
+      - '--character-set-server=utf8'
+      - '--max_allowed_packet=34M'
+      - '--innodb_log_file_size=256M'
+
+  nginx:
+    restart: always
+    container_name: nginx
+    image: <your_registry_here>/nginx:1.12.1
+    ports:
+      - "80:80"
+    links:
+      - jira
+      - confluence
