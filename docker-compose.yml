@@ -3,7 +3,7 @@ services:
   jira:
     restart: always
     container_name: jira
-    image: <your_registry_here>/jira-software:7.5.0 #@TODO build image
+    image: ealebed/jira:7.5.0
     links:
       - database
     ports:
@@ -16,7 +16,7 @@ services:
   confluence:
     restart: always
     container_name: confluence
-    image: <your_registry_here>/confluence:6.3.4 #@TODO build image
+    image: ealebed/confluence:6.3.4
     links:
       - database
     ports:
@@ -27,7 +27,7 @@ services:
   database:
     restart: always
     container_name: percona
-    image: <your_registry_here>/percona:latest
+    image: percona:5.7
     environment:
 #      - MYSQL_DATABASE=confluencedb
 #      - MYSQL_DATABASE=jiradb
