@@ -30,12 +30,12 @@ services:
     image: percona:5.7
     environment:
 #      - MYSQL_DATABASE=confluencedb
-#      - MYSQL_DATABASE=jiradb
+      - MYSQL_DATABASE=jiradb
 #      - MYSQL_USER=cuser
-#      - MYSQL_USER=jirauser
+      - MYSQL_USER=jirauser
 #      - MYSQL_PASSWORD=<cuser_pass_here>
-#      - MYSQL_PASSWORD=<jiradb_pass_here>
-#      - MYSQL_ROOT_PASSWORD=<root_pass_here>
+      - MYSQL_PASSWORD=<jiradb_pass_here>
+      - MYSQL_ROOT_PASSWORD=<root_pass_here>
     volumes:
       - /opt/percona:/var/lib/mysql
     ports:
@@ -49,9 +49,11 @@ services:
   nginx:
     restart: always
     container_name: nginx
-    image: <your_registry_here>/nginx:1.12.1
+    image: nginx:1.12-alpine
     ports:
       - "80:80"
+    volumes:
+      - nginx/default.conf:/etc/nginx/conf.d/default.conf
     links:
       - jira
       - confluence
