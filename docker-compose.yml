@@ -11,33 +11,20 @@ services:
     environment:
       - "CATALINA_OPTS= -Xms768m -Xmx2536m"
     volumes:
-      - /opt/jira:/var/atlassian/jira
-
-  confluence:
-    restart: always
-    container_name: confluence
-    image: ealebed/confluence:6.3.4
-    links:
-      - database
-    ports:
-      - "8090:8090"
-    volumes:
-      - /opt/confluence:/var/atlassian/confluence
+      - /srv/jira:/var/atlassian/jira
 
   database:
-    restart: always
-    container_name: percona
-    image: percona:5.7
+    restart: on-failure
+    container_name: mysql
+    image: mysql/mysql-server:5.7
+
     environment:
-#      - MYSQL_DATABASE=confluencedb
       - MYSQL_DATABASE=jiradb
-#      - MYSQL_USER=cuser
       - MYSQL_USER=jirauser
-#      - MYSQL_PASSWORD=<cuser_pass_here>
-      - MYSQL_PASSWORD=<jiradb_pass_here>
-      - MYSQL_ROOT_PASSWORD=<root_pass_here>
+      - MYSQL_PASSWORD=jirapasswd
+      - MYSQL_ROOT_PASSWORD=root
     volumes:
-      - /opt/percona:/var/lib/mysql
+      - /srv/mysql:/var/lib/mysql
     ports:
       - "3306:3306"
     command:
@@ -56,4 +43,3 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf # or change ~/nginx/default.conf to fullpath
     links:
       - jira
-      - confluence
